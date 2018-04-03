@@ -1,8 +1,12 @@
+#Cambiamos la URL para acceder a la información en formato json de hasta 100 (número máximo) medicamentos relacionados con las aspirinas.
+
 import json
 import urllib.request
-with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=100%27&search=substance_name:%22ASPIRIN%22") as web:
-    info = json.loads(web.read().decode())
+with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=100&search=substance_name:ASPIRIN") as API: 
+    info = json.loads(API.read().decode())
 
+#Creamos un bucle que itere para cada medicamento, inicializado en 0, hasta llegar al último, donde se rompe; e imprimimos la 
+#información en pantalla.
 try:
     i=0
     while True:
