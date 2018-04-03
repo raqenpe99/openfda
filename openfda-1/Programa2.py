@@ -1,16 +1,21 @@
-import json, urllib.request
-with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as web:
-    info = json.loads(web.read().decode())
+try:
+    import json
+    import urllib.request 
 
-for i in range(10):
-    try:
+    with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API: #Modificamos la URL para que aparezcan diez medicamentos
+        info = json.loads(API.read().decode())  
+
+#Iteramos sobre cada uno, utilizando "get" para detectar la información que falte (indicado mediante una lista) y así permitir observar
+#el resto de información sin que se interrumpa el programa.
+
+    for i in range(10): 
         print("Medicamento:", i)
         print("Identificador del medicamento:", info["results"][i]["id"])
-        print("Fabricante:",
-              info["results"][i]["openfda"].get("manufacturer_name", ["No aparece información al respecto"])[0])
+        print("Fabricante:", info["results"][i]["openfda"].get("manufacturer_name", ["No aparece información al respecto"])[0])
         print("Propósito:", info["results"][i].get("purpose", ["No aparece información al respecto"])[0])
         print("\n")
         continue
 
-    except KeyError:
-        print("Lo sentimos, no aparece registrada toda la información correspondiente a este medicamento", "\n")
+except KeyError:
+    print("Lo sentimos, no aparece registrada toda la información correspondiente a este medicamento")
+
