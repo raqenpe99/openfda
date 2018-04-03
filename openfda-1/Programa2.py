@@ -2,8 +2,8 @@ try:
     import json
     import urllib.request 
 
-    with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API: #Modificamos la URL para que aparezcan diez medicamentos
-        info = json.loads(API.read().decode())  
+    with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API: #Modificamos la URL para que aparezcan diez 
+        info = json.loads(API.read().decode())                                          #medicamentos
 
 #Iteramos sobre cada uno, utilizando "get" para detectar la información que falte (indicado mediante una lista) y así permitir observar
 #el resto de información sin que se interrumpa el programa.
