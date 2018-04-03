@@ -19,4 +19,4 @@ try:
             break
 
 except KeyError:
-    print("Lo sentimos, no aparece registrada toda la información correspondiente acerca de este medicamento", "\n")
+    print("Lo sentimos, no aparece registrada toda la información correspondiente a este medicamento", "\n")
