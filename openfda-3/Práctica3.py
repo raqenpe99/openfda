@@ -1,9 +1,8 @@
 import socket
 
 IP = "127.0.0.1"
-PORT = 9012
+PORT = 9011
 MAX_OPEN_REQUESTS = 5
-FILE_HTML = "API.html"
 
 def process_client(clientsocket):
 
@@ -14,8 +13,18 @@ def process_client(clientsocket):
 
     with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API:
         info = json.loads(API.read().decode())
+    
+    def dame_nombres(info):
+        nombres=[]
+        for i in range(10):
+            text = "Nombre genérico:" + info["results"][i]["openfda"].get("generic_name", ["No aparece información al respecto"])[0]
+            nombres.append(text)    
+            print("Medicamento:", [i])
+            print(text + "\n")
+        return print("LISTA COMPLETADA")
 
-    with open(FILE_HTML, "w") as f:
+    def crea_html(info):
+        
         contenido = """
         <!doctype html>
         <html>
@@ -23,25 +32,31 @@ def process_client(clientsocket):
             <meta charset="utf-8">
             <title>API</title>
           </head>
-           <body style='background-color: lightgreen'>
-              <h1>¡Bienvenido a mi programa!</h2>
+           <body style='background: linear-gradient(to right, #D358F7, #FF0040)'>
+              <h1>Obtención de datos Openfda:</h2>
               <p>Se expresan a continuación los nombres de diez medicamentos.</p>
-              <p>Para más información <a href="https://api.fda.gov/drug/label.json?limit=10">pulse aquí</a></p>
-               """
+              <p>Para más información sobre ellos, <a href="https://api.fda.gov/drug/label.json?limit=10">pulse aquí</a></p>
+              <table style="width:ugt" border="4">
+              <tr>
+              <th><p style="color:pink;"style="font-size:50px;">NOMBRES</p>\n"""
+
 
         for i in range(10):
-            text = str("Nombre del medicamento:" + info["results"][i]["openfda"].get("generic_name", ["No aparece información al respecto"])[0])
-            contenido = str(contenido + "\n" + "<p>" + text + "</p>")
-
-        f.write(contenido)
-        f.close()
+            text = str(info["results"][i]["openfda"].get("generic_name", ["No aparece información al respecto"])[0])
+            contenido = str(contenido + "\n" + "<tr>\n   <th><p style='font-size:12px'>" + text + '</p></th>\n  </tr>\n')
+            
+        return contenido
+            
+        
+    dame_nombres(info)
 
     linea_inicial = "HTTP/1.1 200 OK\n"
     cabecera = "Content-Type: text/html\n"
-    cabecera += "Content-Length: {}\n".format(len(str.encode(contenido)))
+    cabecera += "Content-Length: {}\n".format(len(str.encode(crea_html(info))))
 
-    mensaje_respuesta = str.encode( linea_inicial + cabecera + "\n" + contenido)  
+    mensaje_respuesta = str.encode( linea_inicial + cabecera + "\n" + crea_html(info))  
     clientsocket.send(mensaje_respuesta)
+    
 
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
