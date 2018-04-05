@@ -36,9 +36,10 @@ def process_client(clientsocket):
               <h1>Obtención de datos Openfda:</h2>
               <p>Se expresan a continuación los nombres de diez medicamentos.</p>
               <p>Para más información sobre ellos, <a href="https://api.fda.gov/drug/label.json?limit=10">pulse aquí</a></p>
-              <table style="width:ugt" border="4">
+              <img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">
+              <table style="width:50%" border="4">
               <tr>
-              <th><p style="color:pink;"style="font-size:50px;">NOMBRES</p>\n"""
+              <th><p style="color:white;"style="font-size:50px;">NOMBRES</p>\n"""
 
 
         for i in range(10):
