@@ -14,17 +14,20 @@ def process_client(clientsocket):
     with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API:
         info = json.loads(API.read().decode())
     
-    def dame_nombres(info):
+    def dame_nombres(info): #Nos devuelve en pantalla los nombres de cada medicamento y su posición en la lista que es capaz de 
+                            #crear, por si es requerido el manejo de estos datos.
+                            #Si no tiene nombre genérico, se almacena su identificador.
         nombres=[]
         for i in range(10):
-            text = "Nombre genérico:" + info["results"][i]["openfda"].get("generic_name", ["No aparece información al respecto"])[0]
+            text = "Nombre genérico:" + info["results"][i]["openfda"].get("generic_name",  [info["results"][i]["id"]])[0]
             nombres.append(text)    
             print("Medicamento:", [i])
             print(text + "\n")
+            
         return print("LISTA COMPLETADA")
 
-    def crea_html(info):
-        
+    def crea_html(info): #Genera el contenido que será devuelto en un html, iterando sobre cada medicamento y agrupándo los nombres
+                         #en una tabla
         contenido = """
         <!doctype html>
         <html>
@@ -49,11 +52,11 @@ def process_client(clientsocket):
         return contenido
             
         
-    dame_nombres(info)
+    dame_nombres(info) #Llamamos a la función para que, una vez se haya realizado la petición, se imprima la información.
 
     linea_inicial = "HTTP/1.1 200 OK\n"
     cabecera = "Content-Type: text/html\n"
-    cabecera += "Content-Length: {}\n".format(len(str.encode(crea_html(info))))
+    cabecera += "Content-Length: {}\n".format(len(str.encode(crea_html(info)))) #El contenido será nuestra función html
 
     mensaje_respuesta = str.encode( linea_inicial + cabecera + "\n" + crea_html(info))  
     clientsocket.send(mensaje_respuesta)
