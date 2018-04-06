@@ -1,22 +1,21 @@
-#Cambiamos la URL para acceder a la información en formato json de hasta 100 (número máximo) medicamentos relacionados con las aspirinas.
+#Cambiamos la URL para acceder a la información en formato json de hasta 100 (número máximo) medicamentos relacionados con las aspirinas,
+# que tendrán como principio activo el ácido acetilsalicílico.
 
 import json
 import urllib.request
-with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=100&search=substance_name:ASPIRIN") as API: 
+with urllib.request.urlopen("https://api.fda.gov/drug/label.json/?search=active_ingredient:acetylsalicylic&limit=100") as API: 
     info = json.loads(API.read().decode())
 
-#Creamos un bucle que itere para cada medicamento, inicializado en 0, hasta llegar al último, donde se rompe; e imprimimos la 
-#información en pantalla.
-try:
-    i=0
-    while True:
-        print("Medicamento:", info["results"][i]["id"])
+#Iteramos sobre cada medicamento con "for" hasta llegar al último existente, donde finaliza; e imprimimos la información en pantalla.
+#Si no aparece ninguna información en openfda, en lugar de ejecutarse el primer if, se ejecuta el else, evitando el KeyError.
+
+    
+for i in range(len(info["results"])):
+    print("Medicamento:", info["results"][i]["id"])
+
+    if info["results"][i]["openfda"]:
         print("Nombre:", info["results"][i]["openfda"]["generic_name"][0])
         print("Fabricante:", info["results"][i]["openfda"]["manufacturer_name"][0])
         print()
-        i+=1
-        if i==100:
-            break
-
-except KeyError:
-    print("Lo sentimos, no aparece registrada toda la información correspondiente a este medicamento", "\n")
+    else:
+        print("Lo sentimos, no aparece información  del fabricante \n")
