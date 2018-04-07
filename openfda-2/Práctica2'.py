@@ -14,7 +14,7 @@ conexion.request("GET", "/drug/label.json/?search=active_ingredient:acetylsalicy
 JSON = conexion.getresponse()   #Obtienes el json en bruto.
 print(JSON.status, JSON.reason) #Status imprime el valor de 200 y reason, el OK (funciones de http.client).Nos muestra que la petición es correcta.
 
-#A continuación, se lee y se descodifica el json, para que "loads" pueda convertirla en una estructura de datos tipo diccionario.
+#A continuación, se lee y se descodifica el json, para que "loads" pueda convertirlo en una estructura de datos tipo diccionario.
 
 info = json.loads(JSON.read().decode("utf-8"))
 
