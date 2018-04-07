@@ -14,7 +14,7 @@ try:
         print("Fabricante:", info["results"][i]["openfda"].get("manufacturer_name", ["No aparece información al respecto"])[0])
         print("Propósito:", info["results"][i].get("purpose", ["No aparece información al respecto"])[0])
         print("\n")
-        continue
+
 
 except KeyError:
     print("Lo sentimos, no aparece registrada toda la información correspondiente a este medicamento")
