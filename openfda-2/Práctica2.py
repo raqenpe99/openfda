@@ -4,7 +4,8 @@
 import json
 import urllib.request
 with urllib.request.urlopen("https://api.fda.gov/drug/label.json/?search=active_ingredient:acetylsalicylic&limit=100") as API: 
-    info = json.loads(API.read().decode())
+    info = json.loads(API.read().decode()) #Como ya se ha explicado anteriormente, convertimos el json en una cadena de texto manejable en 
+                                           #código python.
 
 #Iteramos sobre cada medicamento con "for" hasta llegar al último existente, donde finaliza; e imprimimos la información en pantalla.
 #Si no aparece ninguna información en openfda, en lugar de ejecutarse el primer if, se ejecuta el else, evitando el KeyError.
