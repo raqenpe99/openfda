@@ -18,6 +18,9 @@ print(JSON.status, JSON.reason) #Status imprime el valor de 200 y reason, el OK 
 
 info = json.loads(JSON.read().decode("utf-8"))
 
+#Iteramos sobre cada medicamento con "for" hasta llegar al último existente, donde finaliza; e imprimimos la información en pantalla.
+#Si no aparece ninguna información en openfda, en lugar de ejecutarse el primer if, se ejecuta el else, evitando el KeyError.
+
 for i in range(len(info["results"])):
     print("*Medicamento:", info["results"][i]["id"])
 
