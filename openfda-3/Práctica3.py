@@ -14,20 +14,17 @@ def process_client(clientsocket):
     with urllib.request.urlopen("https://api.fda.gov/drug/label.json?limit=10") as API:
         info = json.loads(API.read().decode())
     
-    def dame_nombres(info): #Nos devuelve en pantalla los nombres de cada medicamento y su posición en la lista que es capaz de 
-                            #crear, por si es requerido el manejo de estos datos.
-                            #Si no tiene nombre genérico, se almacena su identificador.
+    def crea_lista(info): #Nos crea una lista con los nombres de cada medicamento para el posterior manejo de los datos-
+                          #Si no tiene nombre genérico, se almacena su identificador.
         nombres=[]
         for i in range(10):
-            text = "Nombre genérico:" + info["results"][i]["openfda"].get("generic_name",  [info["results"][i]["id"]])[0]
-            nombres.append(text)    
-            print("Medicamento:", [i])
-            print(text + "\n")
-            
-        return print("LISTA COMPLETADA")
+            text = info["results"][i]["openfda"].get("generic_name",  [info["results"][i]["id"]])[0]
+            nombres.append(text)
+        return nombres
 
-    def crea_html(info): #Genera el contenido que será devuelto en un html, iterando sobre cada medicamento y agrupándo los nombres
-                         #en una tabla
+    def crea_html(nombres): #Genera el contenido que será devuelto en un html, iterando sobre cada medicamento dentro de la lista
+                            #ya creada y agrupándo los nombres en una tabla.
+                            #A continuación imprime la información en pantalla.
         contenido = """
         <!doctype html>
         <html>
@@ -45,20 +42,22 @@ def process_client(clientsocket):
               <th><p style="color:white;"style="font-size:50px;">NOMBRES</p>\n"""
 
 
-        for i in range(10):
-            text = str(info["results"][i]["openfda"].get("generic_name", ["No aparece información al respecto"])[0])
-            contenido = str(contenido + "\n" + "<tr>\n   <th><p style='font-size:12px'>" + text + '</p></th>\n  </tr>\n')
+        for medicamento in nombres:
+            contenido = str(contenido + "\n" + "<tr>\n   <th><p style='font-size:12px'>" + medicamento + '</p></th>\n  </tr>\n')
+            
+            print("Medicamento:", medicamento)
+
             
         return contenido
             
         
-    dame_nombres(info) #Llamamos a la función para que, una vez se haya realizado la petición, se imprima la información.
-
+    #Definimos a continuación  el contenido que ya hemos definido en crea_html, para lo cual llamamos a la primera función:
+    contenido=crea_html(crea_lista(info))
     linea_inicial = "HTTP/1.1 200 OK\n"
     cabecera = "Content-Type: text/html\n"
-    cabecera += "Content-Length: {}\n".format(len(str.encode(crea_html(info)))) #El contenido será nuestra función html
+    cabecera += "Content-Length: {}\n".format(len(str.encode(contenido))) #El contenido será nuestra función html
 
-    mensaje_respuesta = str.encode( linea_inicial + cabecera + "\n" + crea_html(info))  
+    mensaje_respuesta = str.encode( linea_inicial + cabecera + "\n" + contenido)  
     clientsocket.send(mensaje_respuesta)
     
 
