@@ -287,8 +287,8 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             for i in range(len(parametros)):
                 parameters=parametros[i].split("=") #Divide cada parámetro en el nombre o número correspondiente a la búsqueda
-                                                    # y su respectiva variable
-
+                                                    # y su respectiva variable, y las separa como elementos de una lista sobre la que
+                                                    # poder iterar.
                 if parameters[0]=='limit':#Si la variable es la palabra "limit", almacena el valor correspondiente al dato que acompaña.
                     limit=parameters[1]
                     print("Límite:", limit)
