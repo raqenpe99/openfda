@@ -8,7 +8,7 @@ socketserver.TCPServer.allow_reuse_address = True
 
 class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
-    def get_conection(self, limit=1, busqueda="", name=""):
+    def get_conection(self, limit=10, busqueda="", name=""):
 
         headers = {'User-Agent': 'http-client'}
         peticion= "/drug/label.json?limit={}".format(limit)
@@ -37,42 +37,48 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def get_index(self):
         contenido= '''
-            <p><h2>Listado de medicamentos:</h2></p>
+            <html>
+                <head>
+                    <title>API OpenFDA</title>
+                </head>
+                <body style='background: linear-gradient(to right, #A3E4D7, #196F3D)'>
+                    <h1>Introduzca los datos que desee buscar:</h1>
+            <p><h3>Listado de medicamentos:</h3></p>
             <p><form action="listDrugs">
                   Limite:<input type="text" name='limit' value="1">
             <p><input type="submit" value="Aceptar"></p>
             </form>
 
-            <p><h2>Listado de empresas:</h2></p>
+            <p><h3>Listado de empresas:</h3></p>
             <form action = "listCompanies" method="get">
                   Limite: <input type="text" name="limit" value="1">
-            <input type="submit" value="Aceptar">
+            <p><input type="submit" value="Aceptar"></p>
 
             </form>
 
-            <p><h2>Busqueda de farmacos:</h2></p>
+            <p><h3>Listado de precauciones:</h3></p>
+            <form action = "listWarnings" method="get">
+                  Limite: <input type="text" name="limit" value="1">
+
+            <p><input type="submit" value="Aceptar"></p>
+
+            </form>
+
+            <p><h3>Busqueda de farmacos:</h3></p>
             <form action = "searchDrug" method="get">
                   Principio activo: <input type="text" name="active_ingredient" value="acetylsalicylic">
                   Limite: <input type="text" name="limit" value="1">
 
-            <input type="submit" value="Aceptar">
+            <p><input type="submit" value="Aceptar"></p>
 
             </form>
 
-            <p><h2>Busqueda de empresas:</h2></p>
+            <p><h3>Busqueda de empresas:</h3></p>
             <form action = "searchCompany" method="get">
                   Empresa: <input type="text" name="company" value="carefusion">
                   Limite: <input type="text" name="limit" value="1">
 
-            <input type="submit" value="Aceptar">
-
-            </form>
-
-            <p><h2>Busqueda de precauciones:</h2></p>
-            <form action = "listWarnings" method="get">
-                  Limite: <input type="text" name="limit" value="1">
-
-            <input type="submit" value="Aceptar">
+            <p><input type="submit" value="Aceptar"></p>
 
             </form>
 
@@ -88,10 +94,20 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
            '<html lang="es">\n'
            '<head>\n'
            '    <meta charset="UTF-8">\n'
+           '    <title>API</title>\n'
            '</head>\n'
-           '<body>\n'
-           '<p>Nombre.  Fabricante. ID. Propósito</p>'
-           '\n')
+           '<body style="background: linear-gradient(to right, #D358F7, #FF0040)">\n'
+           '<h1>Obtención de datos Openfda:</h2>\n'
+           '<img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">'
+           '<h3>listDRUGS</h3>'
+           '\n'
+           '<table style="width:50%" border="4">\n'
+           '<tr>\n'
+             '<th>Identificador</th>\n'
+             '<th>Nombre</th>\n'
+             '<th>Empresa</th>\n'
+             '<th>Propósito</th>\n'
+            '</tr>\n')
 
         for i in range(len(drug)):
             id= drug[i]["id"]
@@ -101,7 +117,11 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 name=drug[i]["openfda"]["generic_name"][0]
                 manufacturer= drug[i]["openfda"]["manufacturer_name"][0]
 
-            contenido+= '<li>' + name+manufacturer+id+purpose+'</li>'
+            contenido+= "<tr>\n   <td><p style='font-size:12px'>" + id+ '</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>" +'<li>'+ name+ '</li>'+'</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>" +manufacturer + '</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>"  +purpose+ '</p></td>\n  </tr>\n'
+
 
         return contenido
 
@@ -111,21 +131,32 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drug=info["results"]
 
         contenido = (' <!DOCTYPE html>\n'
-               '<html lang="es">\n'
-               '<head>\n'
-               '    <meta charset="UTF-8">\n'
-               '</head>\n'
-               '<body>\n'
-               '<p>Fabricantes</p>'
-               '\n')
+           '<html lang="es">\n'
+           '<head>\n'
+           '    <meta charset="UTF-8">\n'
+           '    <title>API</title>\n'
+           '</head>\n'
+           '<body style="background: linear-gradient(to right, #c39bd3, #5b2c6f)">\n'
+           '<h1>Obtención de datos Openfda:</h2>\n'
+           '<img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">'
+           '<h3>ListCompanies</h3>'
+           '\n'
+           '<table style="width:50%" border="4">\n'
+           '<tr>\n'
+             '<th>Identificador</th>\n'
+             '<th>Empresa</th>\n'
+            '</tr>\n')
 
         for i in range(len(drug)):
+            id= drug[i]["id"]
             if drug[i]["openfda"]:
                 manufacturer=drug[i]["openfda"]["manufacturer_name"][0]
             else:
                 manufacturer="Desconocido"
 
-            contenido+= '<li>'+manufacturer+'</li>'
+            contenido+= "<tr>\n   <td><p style='font-size:12px'>" + id+ '</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>" + '<li>' +manufacturer+'</li>'+ '</p></td>\n  </tr>\n'
+
 
         return contenido
 
@@ -135,22 +166,32 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drug=info['results']
 
         contenido = (' <!DOCTYPE html>\n'
-               '<html lang="es">\n'
-               '<head>\n'
-               '    <meta charset="UTF-8">\n'
-               '</head>\n'
-               '<body>\n'
-               '<p>Precauciones</p>'
-               '\n')
+           '<html lang="es">\n'
+           '<head>\n'
+           '    <meta charset="UTF-8">\n'
+           '    <title>API</title>\n'
+           '</head>\n'
+           '<body style="background: linear-gradient(to right,  #f5cba7 ,  #d35400)">\n'
+           '<h1>Obtención de datos Openfda:</h2>\n'
+           '<img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">'
+           '<h3>ListWARNINGS</h3>'
+           '\n'
+           '<table style="width:50%" border="4">\n'
+           '<tr>\n'
+             '<th>Identificador</th>\n'
+             '<th>Precauciones</th>\n'
+            '</tr>\n')
 
         for i in range(len(drug)):
+            id= drug[i]["id"]
 
             if "warnings" in drug[i].keys():
                 warning=drug[i]['warnings'][0]
             else:
                 warning = "Desconocido"
 
-            contenido+= '<li>' + warning+'</li>'
+            contenido+= "<tr>\n   <td><p style='font-size:12px'>" + id+ '</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>" + '<li>' +warning+'</li>'+ '</p></td>\n  </tr>\n'
 
         return contenido
 
@@ -161,18 +202,25 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drug=info["results"]
 
         contenido = (' <!DOCTYPE html>\n'
-               '<html lang="es">\n'
-               '<head>\n'
-               '    <meta charset="UTF-8">\n'
-               '</head>\n'
-               '<body>\n'
-               '<p>Identifiadores de los farmacos con ese principio activo</p>'
-               '\n')
+           '<html lang="es">\n'
+           '<head>\n'
+           '    <meta charset="UTF-8">\n'
+           '    <title>API</title>\n'
+           '</head>\n'
+           '<body style="background: linear-gradient(to right,  #e6b0aa , #922b21)">\n'
+           '<h1>Obtención de datos Openfda:</h2>\n'
+           '<img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">'
+           '<h3>SearchDRUG</h3>'
+           '\n'
+           '<table style="width:50%" border="4">\n'
+           '<tr>\n'
+           '<th><p style="color:white;"style="font-size:50px;">IDENTIFICADORES de fármacos con este principio</p>\n')
 
         for i in range(len(drug)):
             id= drug[i]["id"]
 
-            contenido+= '<li>'+id+'</li>'
+            contenido+= "<tr>\n   <th><p style='font-size:12px'>" + '<li>' +id+'</li>'+ '</p></th>\n  </tr>\n'
+
 
         return contenido
 
@@ -182,19 +230,29 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drug=info["results"]
 
         contenido = (' <!DOCTYPE html>\n'
-       '<html lang="es">\n'
-       '<head>\n'
-       '    <meta charset="UTF-8">\n'
-       '</head>\n'
-       '<body>\n'
-       '<p>Empresas</p>'
-       '\n')
+           '<html lang="es">\n'
+           '<head>\n'
+           '    <meta charset="UTF-8">\n'
+           '    <title>API</title>\n'
+           '</head>\n'
+           '<body style="background: linear-gradient(to right,   #a9cce3 ,   #21618c )">\n'
+           '<h1>Obtención de datos Openfda:</h2>\n'
+           '<img src="https://2.bp.blogspot.com/-_QDuJunXuyM/WJxbPq_5XsI/AAAAAAAASls/84d8ZrZYoCMyt_jigvCRmqGxJjITZjjcACLcB/s1600/medico.jpg" border="1" width="500" height="500" align="right">'
+           '<h3>SearchCompanies</h3>'
+           '\n'
+           '<table style="width:50%" border="4">\n'
+           '<tr>\n'
+             '<th>Identificador</th>\n'
+             '<th>Empresa</th>\n'
+            '</tr>\n')
+
 
         for i in range(len(drug)):
             id= drug[i]["id"]
             manufacturer=drug[i]["openfda"]["manufacturer_name"][0]
 
-            contenido+= '<li>'+id+manufacturer+'</li>'
+            contenido+= "<tr>\n   <td><p style='font-size:12px'>" + id+ '</p></td>\n'
+            contenido+= "<td><p style='font-size:12px'>" + '<li>' +manufacturer+'</li>'+ '</p></td>\n  </tr>\n'
 
         return contenido
 
@@ -228,7 +286,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     print("Límite:", limit)
 
                 else:
-                    limit=1
+                    limit=10
 
                 if parameters[0]=="company":
                     name=parameters[1]
@@ -244,7 +302,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     print("Búsqueda:", busqueda)
 
         else:
-            limit=1
+            limit=10
             solicitud=""
 
         print('Número de recursos solicitados:', limit)
