@@ -6,15 +6,15 @@ import json
 PORT = 8000
 socketserver.TCPServer.allow_reuse_address = True
 
-#Escogemos la siguiente clae de la libería htttp.server para poder emplear los métodos que hereda e incorporar nuevos
+#Escogemos la siguiente clae de la libería htttp.server para poder emplear los métodos que hereda e incorporar nuevos.
 class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
-    def get_conection(self, limit=10, busqueda="", name=""): #Establece la conexión con OpenFDA
+    def get_conection(self, limit=10, busqueda="", name=""): #Establece la conexión con OpenFDA.
 
         headers = {'User-Agent': 'http-client'}
         peticion= "/drug/label.json?limit={}".format(limit) #Creamos la petición en función de los parámetros escogidos.
 
-        if busqueda != "": #En el caso de que existan parámetros, los añade a la petición para poder acceder a esos datos en la búsqueda
+        if busqueda != "": #En el caso de que existan parámetros, los añade a la petición para poder acceder a esos datos en la búsqueda.
             peticion += '&search='+busqueda+':'+ name
 
         print("Recurso solicitado: {}".format(peticion))
@@ -23,7 +23,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         conexion.request("GET", peticion , None, headers)     #Envía el mensaje de solicitud.
 
 
-        JSON = conexion.getresponse() #Obtiene la respuesta del servidor
+        JSON = conexion.getresponse() #Obtiene la respuesta del servidor.
 
         if JSON.status == 404:  #Si no existe la página solicitada de OpenFDA, envía el mensaje indicándolo Y aborta el programa.
             print("ERROR. Recurso no encontrado")
@@ -36,7 +36,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         return info
 
-    def get_index(self): #Crea el contenido html del formulario
+    def get_index(self): #Crea el contenido html del formulario.
         contenido= '''
             <html>
                 <head>
@@ -87,13 +87,13 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return contenido
 
 
-    def get_listDrugs(self, limit): #Crea y devuelve el contenido del html con el listado de fármacos
+    def get_listDrugs(self, limit): #Crea y devuelve el contenido del html con el listado de fármacos.
         
-        info=self.get_conection(limit) #Establece la conexión con OpenFDA
+        info=self.get_conection(limit) #Establece la conexión con OpenFDA.
         drug=info["results"]     
         
         #A continuación, genera el contenido que será devuelto en un html, iterando sobre cada medicamento dentro del diccionario 
-        #obtenido de OpenFD y agrupándo los nombres en una tabla.
+        #obtenido de OpenFDA y agrupándo los nombres en una tabla.
         contenido = (' <!DOCTYPE html>\n'     
            '<html lang="es">\n'
            '<head>\n'
@@ -129,12 +129,12 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         return contenido
 
-    def get_listCompanies(self, limit): #Crea y devuelve el contenido referente al listado de empresas
+    def get_listCompanies(self, limit): #Crea y devuelve el contenido referente al listado de empresas.
 
-        info=self.get_conection(limit) #Establece la conexión con OpenFDA
+        info=self.get_conection(limit) #Establece la conexión con OpenFDA.
         drug=info["results"]
         #Busca la información referente a las empresas junto al identificador del medicamento correspondiente y 
-        # lo va introduciendo en una tabla
+        # lo va introduciendo en una tabla.
         contenido = (' <!DOCTYPE html>\n'
            '<html lang="es">\n'
            '<head>\n'
@@ -153,9 +153,9 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             '</tr>\n')
 
         for i in range(len(drug)):
-            id= drug[i]["id"]
+            id= drug[i]["id"] 
             if drug[i]["openfda"]:
-                manufacturer=drug[i]["openfda"]["manufacturer_name"][0]
+                manufacturer=drug[i]["openfda"]["manufacturer_name"][0] #Empresa
             else:
                 manufacturer="Desconocido"
 
@@ -165,7 +165,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         return contenido
 
-    def get_listWarnings(self, limit): #Crea el html con el identificador del medicamento y sus advertencias
+    def get_listWarnings(self, limit): #Crea el html con el identificador del medicamento y sus advertencias.
 
         info=self.get_conection(limit)
         drug=info['results']
@@ -201,7 +201,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return contenido
 
 
-    def get_searchDrug(self, limit, busqueda, name): #Crea y devuelve el html con el identificador de los fármacos con ese principio activo
+    def get_searchDrug(self, limit, busqueda, name): #Crea y devuelve el html con el identificador de los fármacos con ese principio activo.
 
         info=self.get_conection(limit, busqueda, name)
         drug=info["results"]
@@ -267,7 +267,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     #Se invoca directamente desde la librería al recibir una petición, la cual quedará almacenada en self.path. Es aquí donde comienza
     #nuestro programa.
     
-        path=self.path #Abreviamos el nombre
+        path=self.path #Abreviamos el nombre.
 
         if '&' in path:                  #Sustituimos este carácter para procesar de la misma forma los parámetros procedentes 
             path=path.replace('&', '?')  #de los apartados de búsqueda del formulario, para los cuales el parámetro limit, en lugar de
@@ -275,7 +275,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         if '%3C' in path:                                   #Eliminamos los caracteres que aparecen como consecuencia de los signos
             path=path.replace("%3C", "").replace("%3E", "") # '<>', para así poder quedarnos solamente con el nombre que se desee buscar
-            print(path)                                     #en los apartados de searchy establecer una conexión adecuada con la API.
+            print(path)                                     #en los apartados de search y establecer una conexión adecuada con la API.
 
 
         if '?' in path: #Se asegura de que exista al menos un parámetro.
@@ -317,15 +317,15 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
         if self.path=="/" or self.path=="": 
-            mensaje=self.get_index() #Determina que el mensaje sea el formulario
-            self.send_response(200) #Indicamos el estatus 200 OK en la primera línea del mensaje de respuesta.
+            mensaje=self.get_index() #Determina que el mensaje sea el formulario.
+            self.send_response(200) #Indicamos el status 200 OK en la primera línea del mensaje de respuesta.
             self.send_header('Content-type', 'text/html') #Indicamos en la cabecera del mensaje que el contenido será un texto en html.
             self.end_headers()
             self.wfile.write(bytes(mensaje, "utf8")) #Enviamos todo el mensaje
 
         elif path== '/listDrugs' or path== '/listDrugs?limit={}'.format(limit):
             mensaje = self.get_listDrugs(limit) #Determina que el mensaje sea el listado de fármacos, cuya función será capaz de 
-            self.send_response(200)             #conectarse con OpenFDA pasándole los parámetros que se han recibido en esta misma función.
+            self.send_response(200)             #conectarse con OpenFDA pasándole los parámetros que se han procesado en esta misma función.
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(bytes(mensaje, "utf8"))
@@ -352,24 +352,24 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes(mensaje, "utf8"))
 
         elif solicitud=="/searchCompany":
-            mensaje=self.get_searchCompany(limit, busqueda, name) #Búsqueda de empresas.
+            mensaje=self.get_searchCompany(limit, busqueda, name) #Búsqueda de empresas
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(bytes(mensaje, "utf8"))
 
-        elif path=='/secret': #Envía el código 401 y una página de advertencia
+        elif path=='/secret': #Envía el código 401 y una página de advertencia.
             self.send_error(401)
             self.send_header('WWW-Authenticate', 'Basic realm="Mi servidor"')
             self.end_headers()
 
-        elif  path=='/redirect': #Envía el código 302 y redirige a la página
+        elif  path=='/redirect': #Envía el código 302 y redirige a la página.
             self.send_response(302)
             self.send_header('Location', 'http://localhost:'+str(PORT))
             self.end_headers()
 
         else: #Si no se reconoce la petición, envía el status 404 de error y el mensaje de advertencia, que, en este caso, no será del
-              #tipo html
+              #tipo html.
             self.send_error(404) 
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
@@ -380,7 +380,7 @@ class TestHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return
 #---------------------------------------------------------------------------------------------------------
 
-Handler = TestHTTPRequestHandler #Establecemos nuestra clase como manejador
+Handler = TestHTTPRequestHandler #Establecemos nuestra clase como manejador.
 
 httpd = socketserver.TCPServer(("", PORT), Handler) #Creamos el socket para establecer las conexiones con el cliente.
 print("Sirviendo en el puerto", PORT)
